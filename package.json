@@ -1,0 +1,16 @@
+{
+  "name": "arena-battles",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": ["canvas","game","web socket"],
+  "author": "Lyncon Baez, Kevin Matheus, Vitor Fonseca",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "socket.io": "^4.0.0"
+  }
+}
