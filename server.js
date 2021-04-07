@@ -1,7 +1,7 @@
 const express = require("express");
 const app = express();
 const http = require('http').createServer(app);
-require("./src/backend/sockets.js");
+const io = require("socket.io")(http);
 
 app.get('/', (req, res) => {
     res.sendFile(__dirname + '/public/index.html');
@@ -15,4 +15,4 @@ http.listen(3000, () => {
     console.log('listening on port 3000');
 });
 
-module.exports = http;
+module.exports = io;

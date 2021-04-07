@@ -1,5 +1,5 @@
-const http = require("../../server.js");
-const io = require("socket.io")(http);
+const io = require("../../server.js");
+
 
 io.on('connection', (socket) => {
     socket.on('chat message', (msg) => {

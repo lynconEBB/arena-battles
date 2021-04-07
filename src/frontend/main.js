@@ -1,20 +1,35 @@
-var socket = io();
-var messages = document.getElementById('messages');
-var form = document.getElementById('form');
-var input = document.getElementById('input');
+import Player from "./Player.js";
 
-form.addEventListener('submit', function(e) {
-    e.preventDefault();
-    if (input.value) {
-        socket.emit('chat message', input.value);
-        input.value = '';
-    }
+const socket = io();
+
+const canvas = document.createElement("canvas");
+export const ctx = canvas.getContext("2d");
+document.body.appendChild(canvas);
+
+canvas.height = 500;
+canvas.width = 700;
+
+const player = new Player(2,2,0,"green");
+
+addEventListener("keydown", event => {
+    player.movements.set(event.key, true);
 });
+
+addEventListener("keyup", event => {
+    player.movements.delete(event.key);
+});
+
+const render =  () =>  {
+    ctx.clearRect(0,0, canvas.clientWidth, canvas.clientHeight);
+    player.render();
+    requestAnimationFrame(render);
+}
+
+requestAnimationFrame(render);
 
 socket.on('chat message', (msg) => {
     console.log("AAA");
     let item = document.createElement('li');
     item.textContent = msg;
-    messages.appendChild(item);
     window.scrollTo(0, document.body.scrollHeight);
 });
