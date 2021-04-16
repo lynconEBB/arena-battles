@@ -1,28 +1,35 @@
-import {ctx} from "./main.js";
+import { ctx } from "./main.js";
 
 export default class Player{
-    constructor(x, y, rotation, color) {
+    constructor(x, y, color) {
         this.x = x;
         this.y = y;
-        this.rotation = 12;
+        this.width = 30;
+        this.height = 80;
+        this.rotation = 0;
+        this.speed = 5;
         this.color = color;
         this.movements = new Map();
+
+        this.cursorPosition = {
+            x: 0,
+            y: 0
+        };
 
         this.commands = {
             a: this.moveLeft.bind(this),
             w: this.moveUp.bind(this),
             s: this.moveDown.bind(this),
             d: this.moveRight.bind(this)
-        }
+        };
 
-        this.lookAt()
+        this.handleCursorMove = this.handleCursorMove.bind(this);
+        addEventListener("mousemove",this.handleCursorMove);
     }
 
-    lookAt() {
-        addEventListener("mousemove",event => {
-            this.rotation = Math.atan2(event.pageY - this.y + 15, event.pageX - this.x + 40);
-            console.log(this.rotation);
-        });
+    handleCursorMove(event) {
+        this.cursorPosition.x = event.clientX;
+        this.cursorPosition.y = event.clientY;
     }
 
     move() {
@@ -32,28 +39,30 @@ export default class Player{
     }
 
     moveUp() {
-        this.y -= 5;
+        this.y -= this.speed;
     }
 
     moveDown() {
-        this.y += 5;
+        this.y += this.speed;
     }
 
     moveRight() {
-        this.x += 5;
+        this.x += this.speed;
     }
 
     moveLeft() {
-        this.x -= 5;
+        this.x -= this.speed;
     }
 
     render() {
-        ctx.save();
-        ctx.translate(this.x + 80, this.y + 30);
-        ctx.rotate(this.rotation);
+        this.rotation = Math.atan2(this.cursorPosition.y - (this.y + this.height /2), this.cursorPosition.x - (this.x + this.width / 2));
+
+        ctx.setTransform(1, 0, 0, 1, this.x, this.y);
+        ctx.rotate(this.rotation + (90 * Math.PI/2));
         ctx.fillStyle = this.color;
-        ctx.fillRect(this.x, this.y, 80,30);
+        ctx.fillRect(-(this.width/2) , -(this.height/2), this.width,this.height);
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+
         this.move();
-        ctx.restore();
     }
 }
