@@ -62,7 +62,5 @@ export class Polygon {
 
             return newVert;
         });
-
-
     }
 }

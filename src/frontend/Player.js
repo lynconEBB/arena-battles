@@ -1,4 +1,6 @@
 import { ctx } from "./main.js";
+import { cursor } from "./cursorPosition.js";
+import {Vector} from "./Vector.js";
 
 export default class Player{
     constructor(x, y, color) {
@@ -6,15 +8,10 @@ export default class Player{
         this.y = y;
         this.width = 30;
         this.height = 80;
-        this.rotation = 0;
+        this.rotation = 90;
         this.speed = 5;
         this.color = color;
         this.movements = new Map();
-
-        this.cursorPosition = {
-            x: 0,
-            y: 0
-        };
 
         this.commands = {
             a: this.moveLeft.bind(this),
@@ -23,13 +20,13 @@ export default class Player{
             d: this.moveRight.bind(this)
         };
 
-        this.handleCursorMove = this.handleCursorMove.bind(this);
-        addEventListener("mousemove",this.handleCursorMove);
-    }
+        addEventListener("keydown", event => {
+            this.movements.set(event.key, true);
+        });
 
-    handleCursorMove(event) {
-        this.cursorPosition.x = event.clientX;
-        this.cursorPosition.y = event.clientY;
+        addEventListener("keyup", event => {
+            this.movements.delete(event.key);
+        });
     }
 
     move() {
@@ -55,14 +52,37 @@ export default class Player{
     }
 
     render() {
-        this.rotation = Math.atan2(this.cursorPosition.y - (this.y + this.height /2), this.cursorPosition.x - (this.x + this.width / 2));
+        const [firstVertex, ...vertices] = this.vertices;
 
-        ctx.setTransform(1, 0, 0, 1, this.x, this.y);
-        ctx.rotate(this.rotation + (90 * Math.PI/2));
         ctx.fillStyle = this.color;
-        ctx.fillRect(-(this.width/2) , -(this.height/2), this.width,this.height);
-        ctx.setTransform(1, 0, 0, 1, 0, 0);
+        ctx.beginPath();
+        ctx.moveTo(firstVertex.x, firstVertex.y);
+
+        for (let vertex of vertices) {
+            ctx.lineTo(vertex.x, vertex.y);
+        }
+        ctx.closePath();
+        ctx.fill();
 
         this.move();
+    }
+
+    get vertices() {
+        this.rotation = Math.atan2(cursor.y - (this.y + this.height /2), cursor.x - (this.x + this.width / 2));
+
+        const vertices = [
+            new Vector(this.x,  this.y),
+            new Vector(this.x, this.y +  this.height),
+            new Vector(this.x+ this.width, this.y +  this.height),
+            new Vector(this.x + this.width, this.y)
+        ];
+
+        for (let vertex of vertices) {
+            vertex.translate(-(this.x + (this.width/2)), -( this.y + (this.height/2)));
+            vertex.rotate(this.rotation);
+            vertex.translate(this.x + (this.width/2), this.y + (this.height/2));
+        }
+
+        return vertices;
     }
 }
