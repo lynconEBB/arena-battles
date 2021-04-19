@@ -5,10 +5,6 @@ export class Vector {
         this.y = y;
     }
 
-    normalize() {
-
-    }
-
     translate(x, y) {
         this.x = this.x + x;
         this.y = this.y + y;
@@ -21,19 +17,23 @@ export class Vector {
         this.y = xClone * Math.sin(angle) + this.y * Math.cos(angle);
     }
 
-    getPerpendicularVector() {
+    getLength() {
+        return Math.sqrt(Math.pow(this.x,2) + Math.pow(this.y, 2));
+    }
 
+    getPerpendicularVector() {
+        return new Vector(-this.y , this.x );
     }
 
     dotProductWith(otherVector) {
-
+        return otherVector.x * this.x + otherVector.y * this.y;
     }
 
     crossProductWith (otherVector) {
 
     }
 
-    getProjectionOnto (projectionVector) {
-
+    getProjectionLengthOnto (projectionVector) {
+        return this.dotProductWith(projectionVector) / projectionVector.getLength();
     }
 }

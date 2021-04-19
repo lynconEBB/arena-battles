@@ -1,15 +1,20 @@
 import Player from "./Player.js";
-import {Bullet} from "./Bullet.js";
+import { Bullet } from "./Bullet.js";
 
-const canvas = document.createElement("canvas");
+export const canvas = document.createElement("canvas");
 export const ctx = canvas.getContext("2d");
 document.body.appendChild(canvas);
 
-canvas.height = 1080;
-canvas.width =1920 ;
 
-const player = new Player(350 ,250,"green");
+const player = new Player(594 ,300,"green");
 const bullet = new Bullet(500, 500, 10);
+
+let socket = io();
+
+socket.on("connection", () =>{
+    console.log(socket);
+});
+
 const render =  () =>  {
     ctx.clearRect(0,0, canvas.clientWidth, canvas.clientHeight);
     player.render();

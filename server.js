@@ -15,4 +15,14 @@ http.listen(3000, () => {
     console.log('listening on port 3000');
 });
 
+io.on('connection', (socket) => {
+    console.log("OLA");
+    socket.test = "Ola Mundo";
+
+    socket.on('chat message', (msg) => {
+        io.emit('chat message', msg);
+    });
+
+});
+
 module.exports = io;

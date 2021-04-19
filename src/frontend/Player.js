@@ -1,4 +1,4 @@
-import { ctx } from "./main.js";
+import { ctx} from "./main.js";
 import { cursor } from "./cursorPosition.js";
 import {Vector} from "./Vector.js";
 
@@ -8,8 +8,8 @@ export default class Player{
         this.y = y;
         this.width = 30;
         this.height = 80;
-        this.rotation = 90;
-        this.speed = 5;
+        this.rotation = -(10 * (Math.PI / 180));
+        this.speed = 1;
         this.color = color;
         this.movements = new Map();
 
@@ -63,22 +63,21 @@ export default class Player{
         }
         ctx.closePath();
         ctx.fill();
-
         this.move();
     }
 
     get vertices() {
-        this.rotation = Math.atan2(cursor.y - (this.y + this.height /2), cursor.x - (this.x + this.width / 2));
+        //this.rotation = Math.atan2(cursor.y - (this.y + this.height /2), cursor.x - (this.x + this.width / 2));
 
         const vertices = [
             new Vector(this.x,  this.y),
-            new Vector(this.x, this.y +  this.height),
-            new Vector(this.x+ this.width, this.y +  this.height),
+            new Vector(this.x, this.y + this.height),
+            new Vector(this.x + this.width, this.y +  this.height),
             new Vector(this.x + this.width, this.y)
         ];
 
         for (let vertex of vertices) {
-            vertex.translate(-(this.x + (this.width/2)), -( this.y + (this.height/2)));
+            vertex.translate(-(this.x + (this.width/2)), -(this.y + (this.height/2)));
             vertex.rotate(this.rotation);
             vertex.translate(this.x + (this.width/2), this.y + (this.height/2));
         }
