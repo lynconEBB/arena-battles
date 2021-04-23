@@ -1,25 +1,50 @@
-import Player from "./Player.js";
-import { Bullet } from "./Bullet.js";
+import {Renderer} from "./Renderer.js";
 
 export const canvas = document.createElement("canvas");
-export const ctx = canvas.getContext("2d");
 document.body.appendChild(canvas);
-
-
-const player = new Player(594 ,300,"green");
-const bullet = new Bullet(500, 500, 10);
 
 let socket = io();
 
-socket.on("connection", () =>{
-    console.log(socket);
+socket.on("server tick", data => {
+    renderer.objects = data;
 });
 
-const render =  () =>  {
-    ctx.clearRect(0,0, canvas.clientWidth, canvas.clientHeight);
-    player.render();
-    bullet.render();
-    requestAnimationFrame(render);
+/*this.commands = {
+    a: this.moveLeft.bind(this),
+    w: this.moveUp.bind(this),
+    s: this.moveDown.bind(this),
+    d: this.moveRight.bind(this)
+};
+
+addEventListener("keydown", event => {
+    this.movements.set(event.key, true);
+});
+
+addEventListener("keyup", event => {
+    this.movements.delete(event.key);
+});
+
+move() {
+    this.movements.forEach(((value, key) => {
+        this.commands[key]?.();
+    }));
 }
 
-requestAnimationFrame(render);
+moveUp() {
+    this.y -= this.speed;
+}
+
+moveDown() {
+    this.y += this.speed;
+}
+
+moveRight() {
+    this.x += this.speed;
+}
+
+moveLeft() {
+    this.x -= this.speed;
+}*/
+
+const renderer = new Renderer(canvas);
+renderer.init();

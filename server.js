@@ -1,7 +1,7 @@
 const express = require("express");
 const app = express();
 const http = require('http').createServer(app);
-const io = require("socket.io")(http);
+
 
 app.get('/', (req, res) => {
     res.sendFile(__dirname + '/public/index.html');
@@ -15,14 +15,6 @@ http.listen(3000, () => {
     console.log('listening on port 3000');
 });
 
-io.on('connection', (socket) => {
-    console.log("OLA");
-    socket.test = "Ola Mundo";
+module.exports = http;
 
-    socket.on('chat message', (msg) => {
-        io.emit('chat message', msg);
-    });
-
-});
-
-module.exports = io;
+require("./src/backend/sockets.js");

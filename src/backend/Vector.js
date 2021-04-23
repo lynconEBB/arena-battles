@@ -1,4 +1,4 @@
-export class Vector {
+class Vector {
 
     constructor(x = 1, y = 1) {
         this.x = x;
@@ -29,7 +29,11 @@ export class Vector {
         return otherVector.x * this.x + otherVector.y * this.y;
     }
 
+
+
     getProjectionLengthOnto (projectionVector) {
         return this.dotProductWith(projectionVector) / projectionVector.getLength();
     }
 }
+
+module.exports = Vector

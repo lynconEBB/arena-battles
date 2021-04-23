@@ -1,4 +1,4 @@
-import {subtractVectors} from "./vectorUtils.js";
+import {subtractVectors} from "../frontend/vectorUtils.js";
 
 const getProjectionRangeCircle = (circleCenter,radius, projectionAxis) => {
     const projectionLength = circleCenter.getProjectionLengthOnto(projectionAxis);
