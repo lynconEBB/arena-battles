@@ -14,10 +14,6 @@ export class Renderer{
     }
 
     renderTriangle(vertices) {
-        //console.log(vertices);
-        /*this.ctx.beginPath();
-        this.ctx.arc(vertices[0].x, vertices[0].y, 50, 0, 2 * Math.PI);
-        this.ctx.stroke();*/
         this.ctx.beginPath();
         this.ctx.moveTo(vertices[0].x, vertices[0].y);
         this.ctx.lineTo(vertices[1].x, vertices[1].y);
