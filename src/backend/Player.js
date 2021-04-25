@@ -22,8 +22,6 @@ class Player{
     }
 
     move() {
-
-
         this.movements.forEach(((value, key) => {
             this.commands[key]?.();
         }));
