@@ -1,4 +1,4 @@
-import {Vector} from "./Vector.js";
+const Vector = require("./Vector.js");
 
 /**
  * Cria um vetor subtraindo o vetor1 do verto2
@@ -7,7 +7,7 @@ import {Vector} from "./Vector.js";
  * @param {Vector} vector2
  * @returns {Vector}
  */
-export const subtractVectors = (vector1, vector2) => {
+const subtractVectors = (vector1, vector2) => {
     return new Vector(vector1.x - vector2.x, vector1.y - vector2.y);
 };
 
@@ -18,6 +18,11 @@ export const subtractVectors = (vector1, vector2) => {
  * @param {Vector} vector2
  * @returns {Vector}
  */
-export const addVectors = (vector1, vector2) => {
+const addVectors = (vector1, vector2) => {
     return new Vector(vector1.x + vector2.x, vector1.y + vector2.y);
 };
+
+module.exports = {
+    subtractVectors,
+    addVectors
+}

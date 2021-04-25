@@ -1,4 +1,4 @@
-import {subtractVectors} from "../frontend/vectorUtils.js";
+const { subtractVectors } = require("./vectorUtils.js");
 
 const getProjectionRangeCircle = (circleCenter,radius, projectionAxis) => {
     const projectionLength = circleCenter.getProjectionLengthOnto(projectionAxis);
@@ -39,11 +39,11 @@ const checkVerticesCollision =  (verticesObject1, verticesObject2) => {
     return true;
 }
 
-export const testHitPolygonPolygon = (verticesObject1, verticesObject2) => {
+const testHitPolygonPolygon = (verticesObject1, verticesObject2) => {
     return checkVerticesCollision(verticesObject2, verticesObject1) && checkVerticesCollision(verticesObject1, verticesObject2);
 };
 
-export const testHitPolygonCircle = (polygonVertices, circleCenter, circleRadius) => {
+const testHitPolygonCircle = (polygonVertices, circleCenter, circleRadius) => {
 
     let projectionAxisCircle = subtractVectors(circleCenter, polygonVertices[0]);
     let shortestDistance = projectionAxisCircle.getLength();
@@ -76,4 +76,14 @@ export const testHitPolygonCircle = (polygonVertices, circleCenter, circleRadius
     const circleRange = getProjectionRangeCircle(circleCenter,circleRadius, projectionAxisCircle);
 
     return !(polygonRange.min - circleRange.max > 0 || circleRange.min - polygonRange.max > 0);
+}
+
+const testHitAABB = (point, minX, minY, maxX, maxY) => {
+    return (point.x > maxX || point.x < minX || point.y > maxY || point.y < minY)
+}
+
+module.exports = {
+    testHitPolygonCircle,
+    testHitPolygonPolygon,
+    testHitAABB
 }

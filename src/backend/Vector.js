@@ -29,7 +29,11 @@ class Vector {
         return otherVector.x * this.x + otherVector.y * this.y;
     }
 
-
+    normalize() {
+        let magnitude = this.getLength();
+        this.x /= magnitude;
+        this.y /= magnitude;
+    }
 
     getProjectionLengthOnto (projectionVector) {
         return this.dotProductWith(projectionVector) / projectionVector.getLength();

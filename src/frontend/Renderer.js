@@ -1,4 +1,4 @@
-import {canvas} from "./main.js";
+import { canvas } from "./main.js";
 
 export class Renderer{
 
@@ -22,24 +22,31 @@ export class Renderer{
         this.ctx.fill();
     }
 
-    renderCircle() {
-
-    }
-
-    renderBackground() {
-
+    renderCircle(center) {
+        this.ctx.beginPath();
+        this.ctx.arc(center.x, center.y, 5, 0, 2 * Math.PI);
+        this.ctx.fill();
     }
 
     init() {
         this.render();
     }
 
-    render() {
+    clear() {
         this.ctx.clearRect(0,0, canvas.width, canvas.height);
+    }
+
+    render() {
+        this.clear();
 
         for (let player of this.objects.players) {
             this.renderTriangle(player);
         }
+
+        for (let bullet of this.objects.bullets) {
+            this.renderCircle(bullet);
+        }
+
         requestAnimationFrame(this.render);
     }
 }

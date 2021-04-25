@@ -18,8 +18,20 @@ addEventListener("keyup", event => {
 });
 
 addEventListener("mousemove", event => {
-    socket.emit("mouse move", {x: event.clientX, y: event.clientY});
+    let rect = canvas.getBoundingClientRect();
+    socket.emit("mouse move", {
+        x: event.clientX - rect.left,
+        y: event.clientY - rect.top
+    });
 });
+
+addEventListener("mousedown", event => {
+    let rect = canvas.getBoundingClientRect();
+    socket.emit("shoot", {
+        x: event.clientX - rect.left,
+        y: event.clientY - rect.top
+    });
+})
 
 const renderer = new Renderer(canvas);
 renderer.init();
