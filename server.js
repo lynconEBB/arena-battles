@@ -3,6 +3,8 @@ const app = express();
 const http = require('http').createServer(app);
 
 
+const port = process.env.PORT;
+
 app.get('/', (req, res) => {
     res.sendFile(__dirname + '/public/index.html');
 });
@@ -11,8 +13,8 @@ app.use("/css", express.static(__dirname + "/public/css"));
 
 app.use("/src", express.static(__dirname + "/src"));
 
-http.listen(3000, () => {
-    console.log('listening on port 3000');
+http.listen(port, () => {
+    console.log('listening on port ' + port);
 });
 
 module.exports = http;
