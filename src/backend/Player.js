@@ -53,6 +53,10 @@ class Player{
         this.x -= this.speed;
     }
 
+    formatToPackage() {
+
+    }
+
     get vertices() {
         this.rotation = Math.atan2(this.cursorPosition.y - this.y  , this.cursorPosition.x - this.x ) + Math.PI/2;
 

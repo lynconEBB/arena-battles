@@ -1,19 +1,7 @@
-const http = require("../../server.js");
-const io = require("socket.io")(http);
+const gameState = require("./gameLoop.js");
+const serverSocket = require("../../server.js");
 const Player = require("./Player.js");
 const Bullet = require("./Bullet.js");
-const collision = require("./collision.js");
-
-const tickRate = 60;
-const gameState = {
-    state: "running",
-    players: {},
-    bullets: {},
-    mapSize: {
-        width: 1024,
-        height: 576
-    }
-}
 
 const addPlayer = (socketId) => {
     gameState.players[socketId] = new Player(350, 350, "black");
@@ -25,7 +13,7 @@ const shootBullet = (socketId, cursorPosition) => {
     gameState.bullets[socketId].push(new Bullet(player.x, player.y,cursorPosition));
 }
 
-io.on('connection', (socket) => {
+serverSocket.on('connection', (socket) => {
     console.log("New client connected with id: " + socket.id );
     addPlayer(socket.id);
 
@@ -50,27 +38,3 @@ io.on('connection', (socket) => {
         delete gameState.players[socket.id];
     });
 });
-
-const tick = () => {
-
-    for (let player of Object.values(gameState.players)) {
-        player.move();
-    }
-
-    const bul = [];
-    for (let playerBullets of Object.values(gameState.bullets)) {
-        for (let bullet of playerBullets) {
-            bullet.move();
-            bul.push({x: bullet.x, y:bullet.y});
-        }
-    }
-
-    const dataToSend = {
-        players: Object.values(gameState.players).map(player => player.vertices),
-        bullets: bul
-    }
-
-    io.emit("server tick", dataToSend);
-}
-
-setInterval(tick, 1000 / tickRate);

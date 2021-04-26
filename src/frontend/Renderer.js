@@ -1,16 +1,22 @@
-import { canvas } from "./main.js";
+import socket from "./socket.js";
 
 export class Renderer{
 
     constructor(canvas) {
         canvas.height = 576;
         canvas.width = 1024;
+        this.canvas = canvas;
         this.objects = {
             players: [],
             bullets: []
         };
         this.ctx = canvas.getContext("2d");
         this.render = this.render.bind(this);
+
+        socket.on("server tick", data => {
+            console.log("AAA");
+            this.objects = data;
+        });
     }
 
     renderTriangle(vertices) {
@@ -33,7 +39,7 @@ export class Renderer{
     }
 
     clear() {
-        this.ctx.clearRect(0,0, canvas.width, canvas.height);
+        this.ctx.clearRect(0,0, this.canvas.width, this.canvas.height);
     }
 
     render() {
