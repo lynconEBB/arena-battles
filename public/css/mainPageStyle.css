@@ -1,0 +1,30 @@
+h1 {
+    font-family: a•space, sans-serif;
+    color: var(--primary-color);
+    width: 400px;
+    font-size: 4rem;
+    text-align: center;
+}
+
+img {
+    position: absolute;
+    width: 600px;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: -400px;
+}
+
+span {
+    font-family: Roboto, sans-serif;
+    font-size: 1rem;
+    color: var(--primary-color);
+}
+
+body{
+    background-image: url("../assets/stars.svg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}

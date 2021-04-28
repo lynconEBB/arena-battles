@@ -14,7 +14,6 @@ export class Renderer{
         this.render = this.render.bind(this);
 
         socket.on("server tick", data => {
-            console.log("AAA");
             this.objects = data;
         });
     }

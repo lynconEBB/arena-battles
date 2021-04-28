@@ -1,4 +1,5 @@
 import socket from "./socket.js";
+
 export default class InputControls {
     constructor(canvas) {
         addEventListener("keydown", event => {
