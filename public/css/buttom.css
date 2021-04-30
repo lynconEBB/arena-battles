@@ -1,3 +1,13 @@
 .game-button {
-
+    background: transparent;
+    color: var(--primary-color);
+    border-radius: 10px;
+    outline: none;
+    padding: 0.7rem 2rem;
+    width: 300px;
+    font-family: Roboto, sans-serif;
+    font-size: 1.2rem;
+    cursor: pointer;
+    border: var(--primary-color) 2px solid;
+    margin-bottom: 1rem;
 }

@@ -2,6 +2,10 @@ import socket from "./socket.js";
 
 export default class InputControls {
     constructor(canvas) {
+        this.canvas = canvas;
+    }
+
+    init() {
         addEventListener("keydown", event => {
             socket.emit("key press", event.key);
         });
@@ -11,7 +15,7 @@ export default class InputControls {
         });
 
         addEventListener("mousemove", event => {
-            let rect = canvas.getBoundingClientRect();
+            let rect = this.canvas.getBoundingClientRect();
             socket.emit("mouse move", {
                 x: event.clientX - rect.left,
                 y: event.clientY - rect.top
@@ -19,7 +23,7 @@ export default class InputControls {
         });
 
         addEventListener("mousedown", event => {
-            let rect = canvas.getBoundingClientRect();
+            let rect = this.canvas.getBoundingClientRect();
             socket.emit("shoot", {
                 x: event.clientX - rect.left,
                 y: event.clientY - rect.top

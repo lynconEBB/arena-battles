@@ -1,5 +1,16 @@
 import socket from "./socket.js";
 
+const PLAYER_SPRITES = {
+    1: new Image(),
+    2: new Image(),
+    3: new Image(),
+    4: new Image(),
+};
+PLAYER_SPRITES["1"].src = "assets/ship1.png";
+PLAYER_SPRITES["2"].src = "assets/ship2.png";
+PLAYER_SPRITES["3"].src = "assets/ship3.png";
+PLAYER_SPRITES["4"].src = "assets/ship4.png";
+
 export class Renderer{
 
     constructor(canvas) {
@@ -18,17 +29,17 @@ export class Renderer{
         });
     }
 
-    renderTriangle(vertices) {
-        this.ctx.beginPath();
-        this.ctx.moveTo(vertices[0].x, vertices[0].y);
-        this.ctx.lineTo(vertices[1].x, vertices[1].y);
-        this.ctx.lineTo(vertices[2].x, vertices[2].y);
-        this.ctx.closePath();
-        this.ctx.fill();
+    renderSprite(playerData) {
+        this.ctx.save();
+        this.ctx.translate(playerData.x, playerData.y);
+        this.ctx.rotate(playerData.rotation);
+        this.ctx.drawImage(PLAYER_SPRITES[playerData.spriteIndex], -30, -25, 60,50);
+        this.ctx.restore();
     }
 
     renderCircle(center) {
         this.ctx.beginPath();
+        this.ctx.fillStyle = "#45d9ff";
         this.ctx.arc(center.x, center.y, 5, 0, 2 * Math.PI);
         this.ctx.fill();
     }
@@ -45,7 +56,7 @@ export class Renderer{
         this.clear();
 
         for (let player of this.objects.players) {
-            this.renderTriangle(player);
+            this.renderSprite(player);
         }
 
         for (let bullet of this.objects.bullets) {
