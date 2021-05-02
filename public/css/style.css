@@ -20,3 +20,7 @@ html, body {
     overflow: hidden;
     background-color: var(--color-back);
 }
+
+.hidden{
+    display: none;
+}

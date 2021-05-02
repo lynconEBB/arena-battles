@@ -1,6 +1,12 @@
-const Vector = require("./Vector.js");
-const {testHitAABB} = require("./collision.js");
+const Vector = require("../collision/Vector.js");
+const {testHitAABB} = require("../collision/collision.js");
 
+const gameCorners = {
+    top: 0,
+    bottom: 576,
+    left: 0,
+    right: 1024
+}
 
 const PLAYER_INITIAL_POSITIONS = {
     1: {x: 512, y: 40},
@@ -10,13 +16,14 @@ const PLAYER_INITIAL_POSITIONS = {
 }
 
 class Player{
-    constructor(playerIndex) {
+    constructor(playerIndex, roomId) {
         this.x = PLAYER_INITIAL_POSITIONS[playerIndex].x;
         this.y = PLAYER_INITIAL_POSITIONS[playerIndex].y;
         this.sprite = playerIndex;
-        this.width = 50;
-        this.height = 30;
+        this.currentRoom = roomId;
+        this.isAlive = true;
         this.rotation = Math.PI/2;
+        this.bullets = {};
         this.speed = 5;
         this.cursorPosition = {x: 0, y:0};
         this.movements = new Map();
@@ -40,10 +47,14 @@ class Player{
 
         this.movements.forEach(((value, key) => {
             this.commands[key]?.();
-            if (testHitAABB({x: this.x, y:this.y}, 30,30,1024 - 20,576 - 30)){
+            if (this.isHittingCorner()){
                 this.reverseCommands[key]?.();
             }
         }));
+    }
+
+    isHittingCorner() {
+        return testHitAABB({x: this.x, y:this.y}, gameCorners.left, gameCorners.top, gameCorners.right, gameCorners.bottom);
     }
 
     moveUp() {
@@ -73,13 +84,18 @@ class Player{
 
     get vertices() {
         const vertices = [
-            new Vector(this.x, this.y - this.height/2),
-            new Vector(this.x - (this.width/2), this.y + this.height/2),
-            new Vector(this.x + (this.width/2), this.y + this.height/2),
+            new Vector(this.x + 20, this.y + 10),
+            new Vector(this.x + 40, this.y + 10),
+            new Vector(this.x + 60, this.y + 35),
+            new Vector(this.x + 60, this.y + 50),
+            new Vector(this.x + 40, this.y + 35),
+            new Vector(this.x + 20, this.y + 35),
+            new Vector(this.x, this.y + 50),
+            new Vector(this.x, this.y + 35),
         ];
 
         for (let vertex of vertices) {
-            vertex.translate(-this.x , -this.y );
+            vertex.translate(-(this.x + 30), -(this.y + 25) );
             vertex.rotate(this.rotation);
             vertex.translate(this.x, this.y);
         }

@@ -1,17 +1,21 @@
-const Vector = require("./Vector.js");
-const { subtractVectors } = require("./vectorUtils.js");
-const gameState = require("./gameLoop.js");
-const { v4: uuid } = require('uuid');
+const Vector = require("../collision/Vector.js");
+const { subtractVectors } = require("../collision/vectorUtils.js");
+const {testHitAABB} = require("../collision/collision.js");
+
+const gameCorners = {
+    top: 0,
+    bottom: 576,
+    left: 0,
+    right: 1024
+}
 
 class Bullet{
-
-    constructor(x, y, cursorPosition, playerId) {
+    constructor(id, x, y, cursorPosition, playerId) {
+        this.id = id;
         this.x = x;
         this.y = y;
         this.playerId = playerId;
-        this.id = uuid();
         this.initialPosition = new Vector(x,y);
-        this.color = "#000";
         this.step = 1;
         this._setDirection(cursorPosition);
     }
@@ -23,15 +27,15 @@ class Bullet{
     }
 
     formatToPackage() {
-
+        return {x: this.x, y: this.y};
     }
 
-    checkCornerCollision() {
-
+    isHittingCorner() {
+       return testHitAABB({x: this.x, y:this.y}, gameCorners.left, gameCorners.top, gameCorners.right, gameCorners.bottom);
     }
 
     move() {
-        this.step += 20;
+        this.step += 15;
         this.x = this.initialPosition.x + this.step * this.direction.x;
         this.y = this.initialPosition.y + this.step * this.direction.y;
     }

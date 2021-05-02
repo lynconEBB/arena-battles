@@ -1,47 +1,53 @@
 const serverSocket = require("../../server.js");
-const collision = require("./collision.js");
+const collision = require("./collision/collision.js");
 const gameState = require("./gameState.js");
-const tickRate = 60;
+const Vector = require("./collision/Vector.js");
+require("./eventHandlers.js");
 
-const checkBulletPlayerCollision = () => {
+const tickRate = 30;
 
+const checkBulletPlayerCollision = (room, bullet) => {
+
+    room.players.forEach(playerId => {
+        const player = gameState.getPlayer(playerId);
+        if (playerId !== bullet.playerId && player.isAlive) {
+            if (collision.testHitPolygonCircle(player.vertices, new Vector(bullet.x, bullet.y), 5)) {
+                player.isAlive = false;
+                gameState.removeBullet(bullet.id);
+            }
+        }
+    });
 }
 
 const tick = () => {
 
-   /* for (let player of Object.values(gameState.players)) {
-        player.move();
-    }
-
-    const bul = [];
-    for (let playerBullets of Object.values(gameState.bullets)) {
-        for (let index in playerBullets) {
-            playerBullets[index].move();
-            if (collision.testHitAABB({x: playerBullets[index].x, y: playerBullets[index].y},30,30,1024 - 30,576 - 30)) {
-                playerBullets.splice(index, 1);
-            } else {
-                bul.push({x: playerBullets[index].x, y: playerBullets[index].y});
-            }
-        }
-    }
-
-    const dataToSend = {
-        players: Object.values(gameState.players).map(player => player.vertices),
-        bullets: bul
-    }
-*/
-
     gameState.forEachRoom((room, roomId) => {
-        if (room.state !== "running") {
+        if (room.state === "running") {
             const dataToSend = {
                 players: [],
                 bullets: []
             }
 
-            for (let playerId of room.players) {
-                gameState.getPlayer(playerId).move();
-                dataToSend.players.push(gameState.getPlayer(playerId).formatToPackage());
-            }
+            room.players.forEach(playerId => {
+                const player = gameState.getPlayer(playerId);
+
+                if (player.isAlive) {
+                    player.move();
+                    dataToSend.players.push(player.formatToPackage());
+                }
+
+                for (let bulletId in player.bullets) {
+                    const bullet = gameState.getBullet(bulletId);
+                    if (bullet.isHittingCorner()) {
+                        gameState.removeBullet(bulletId);
+                        continue;
+                    }
+                    dataToSend.bullets.push(bullet.formatToPackage());
+                    bullet.move();
+                    checkBulletPlayerCollision(room, bullet);
+                }
+
+            });
 
             serverSocket.to(roomId).emit("server tick", dataToSend);
         }
@@ -50,4 +56,3 @@ const tick = () => {
 
 setInterval(tick, 1000 / tickRate);
 
-require("./eventHandlers.js");

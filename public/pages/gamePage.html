@@ -9,9 +9,19 @@
     <script src="../js/main.js" defer type="module"></script>
 </head>
 <body>
-    <header>
+    <header class="hidden">
         <h1>Estado: <span></span></h1>
+        <div id="info">
+            <h1></h1>
+            <img src="../assets/play-icon.svg" class="play-button hidden">
+        </div>
         <h2>Id da sala: </h2>
     </header>
+
+    <div id="error-message" class="hidden">
+        <h3>Id de sala inválido!</h3>
+        <h3>Insira um id válido</h3>
+        <a href="/">Retornar</a>
+    </div>
 </body>
 </html>

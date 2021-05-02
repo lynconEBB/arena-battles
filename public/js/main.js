@@ -1,12 +1,17 @@
-import { Renderer } from "./Renderer.js";
+import { Renderer, PLAYER_SPRITES} from "./Renderer.js";
 import InputControls from "./controls.js";
 import socket from "./socket.js";
 
 const canvas = document.createElement("canvas");
-document.body.appendChild(canvas);
-let roomId = "";
 const stateTitle = document.querySelector("span");
 const roomIdTitle = document.querySelector("h2");
+const errorMessage = document.querySelector("#error-message");
+const header = document.querySelector("header");
+const infoDiv = document.querySelector("#info");
+const playerCountDiv = document.querySelector("#info h1");
+const playButton = document.querySelector(".play-button");
+const inputControls = new InputControls(canvas);
+const renderer = new Renderer(canvas);
 
 const getParameterByName = (name, url = window.location.href) => {
     name = name.replace(/[\[\]]/g, '\\$&');
@@ -17,34 +22,54 @@ const getParameterByName = (name, url = window.location.href) => {
     return decodeURIComponent(results[2].replace(/\+/g, ' '));
 };
 
-const inputControls = new InputControls(canvas);
-const renderer = new Renderer(canvas);
+const init = (serverRoom, state, isOwner, playerIndex) => {
+    header.classList.remove("hidden");
+    document.body.appendChild(canvas);
+
+    infoDiv.prepend(PLAYER_SPRITES[playerIndex]);
+
+    roomIdTitle.textContent = `Id da sala: ${serverRoom}`;
+    changeState(state);
+
+    if (isOwner) {
+        playButton.addEventListener("click", () => {
+            socket.emit("start game");
+        });
+        playButton.classList.remove("hidden");
+    }
+
+    renderer.init();
+    inputControls.init();
+}
+
+const changeState = (newState) => {
+    if (newState === "waiting") {
+        stateTitle.textContent = "Aguardando";
+        stateTitle.classList.add("waiting");
+    } else if (newState === "running") {
+        stateTitle.textContent = "Em andamento";
+        stateTitle.classList.add("running");
+    }
+}
 
 if (getParameterByName("createMatch") !== null) {
     socket.emit("create room");
 
-    socket.on("room created", () => {
-        roomId = socket.id;
-        roomIdTitle.textContent = `Id da sala: ${roomId}`;
-        stateTitle.textContent = "Esperando";
-        stateTitle.classList.add("waiting");
-        renderer.init();
-        inputControls.init();
-    });
+    socket.on("room created", init);
 
 } else if (getParameterByName("match") !== null) {
-    roomId = getParameterByName("match");
+    socket.emit("enter room", getParameterByName("match"));
 
-    socket.emit("enter room", roomId);
+    socket.on("room entered", init);
 
-    socket.on("room entered", () => {
-        roomIdTitle.textContent = `Id da sala: ${roomId}`;
-        stateTitle.textContent = "Esperando";
-        stateTitle.classList.add("waiting");
-        renderer.init();
-        inputControls.init();
-    });
 } else {
-
-
+    errorMessage.classList.remove("hidden");
 }
+
+socket.on("error", () => {
+    errorMessage.classList.remove("hidden");
+});
+
+socket.on("player count", playersCount => {
+    playerCountDiv.textContent = `<${playersCount}/4> jogadores`;
+});

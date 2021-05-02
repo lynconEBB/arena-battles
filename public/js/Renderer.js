@@ -1,11 +1,12 @@
 import socket from "./socket.js";
 
-const PLAYER_SPRITES = {
+export const PLAYER_SPRITES = {
     1: new Image(),
     2: new Image(),
     3: new Image(),
     4: new Image(),
 };
+
 PLAYER_SPRITES["1"].src = "assets/ship1.png";
 PLAYER_SPRITES["2"].src = "assets/ship2.png";
 PLAYER_SPRITES["3"].src = "assets/ship3.png";
@@ -55,12 +56,12 @@ export class Renderer{
     render() {
         this.clear();
 
-        for (let player of this.objects.players) {
-            this.renderSprite(player);
-        }
-
         for (let bullet of this.objects.bullets) {
             this.renderCircle(bullet);
+        }
+
+        for (let player of this.objects.players) {
+            this.renderSprite(player);
         }
 
         requestAnimationFrame(this.render);
