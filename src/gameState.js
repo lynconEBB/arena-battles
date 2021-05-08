@@ -6,7 +6,6 @@ const rooms = new Map();
 const players = new Map();
 const bullets = new Map();
 
-
 const forEachRoom = (callbackFunction) => {
     rooms.forEach(callbackFunction)
 }
@@ -16,7 +15,16 @@ const getRoom = (roomId) => {
 }
 
 const removeRoom = (roomId) => {
+    const room = getRoom(roomId);
+    room.players.forEach(playerId => {
+        const player = getPlayer(playerId);
+        for (let bulletId in player.bullets) {
+            bullets.delete(bulletId);
+        }
+        players.delete(playerId);
+    });
     rooms.delete(roomId);
+
 };
 
 const createRoom = (roomId) => {
@@ -64,6 +72,16 @@ const removeBullet = (bulletId) => {
     bullets.delete(bulletId);
 }
 
+const getPlayersAlive = (roomId) => {
+    const playersAlive = [];
+
+    rooms.get(roomId).players.forEach(playerId => {
+        getPlayer(playerId).isAlive && playersAlive.push(playerId);
+    });
+
+    return playersAlive;
+}
+
 module.exports = {
     addPlayerToRoom,
     removePlayerFromRoom,
@@ -74,5 +92,7 @@ module.exports = {
     addBulletToPlayer,
     getBullet,
     removeBullet,
-    getRoom
+    getRoom,
+    rooms,
+    getPlayersAlive
 }

@@ -1,4 +1,4 @@
-const serverSocket = require("../../server.js");
+const serverSocket = require("../server.js");
 const gameState = require("./gameState.js");
 
 serverSocket.on('connection', (socket) => {
@@ -26,39 +26,60 @@ serverSocket.on('connection', (socket) => {
     });
 
     socket.on("key press", key => {
-        const playerRoom = gameState.getRoom(gameState.getPlayer(socket.id).currentRoom);
-        if (playerRoom.state === "running") {
+        const playerRoom = gameState.getRoom(gameState.getPlayer(socket.id)?.currentRoom);
+        if (playerRoom && playerRoom.state === "running") {
             gameState.getPlayer(socket.id).movements.set(key, true);
         }
     });
 
     socket.on("key up", key => {
-        const playerRoom = gameState.getRoom(gameState.getPlayer(socket.id).currentRoom);
-        if (playerRoom.state === "running") {
+        const playerRoom = gameState.getRoom(gameState.getPlayer(socket.id)?.currentRoom);
+        if ( playerRoom && playerRoom.state === "running") {
             gameState.getPlayer(socket.id).movements.delete(key);
         }
     });
 
     socket.on("mouse move", cursor => {
         const playerRoom = gameState.getRoom(gameState.getPlayer(socket.id)?.currentRoom);
-        if (playerRoom.state === "running") {
+        if (playerRoom && playerRoom.state === "running") {
             gameState.getPlayer(socket.id) && (gameState.getPlayer(socket.id).cursorPosition = cursor);
         }
     });
 
     socket.on("shoot", cursor => {
-        const playerRoom = gameState.getRoom(gameState.getPlayer(socket.id).currentRoom);
-        if (playerRoom.state === "running") {
+        const playerRoom = gameState.getRoom(gameState.getPlayer(socket.id)?.currentRoom);
+
+        if (playerRoom && playerRoom.state === "running" && gameState.getPlayer(socket.id).isAlive
+                && gameState.getPlayer(socket.id).lastShotTimestamp + 700 < Date.now()) {
+
+            gameState.getPlayer(socket.id).lastShotTimestamp = Date.now();
             gameState.addBulletToPlayer(socket.id, cursor);
         }
     });
 
     socket.on("start game", () => {
+        const room = gameState.getRoom(socket.id);
+        room.players.forEach(playerId => {
+            const player = gameState.getPlayer(playerId);
+            player.isAlive = true;
+            player.reset();
+            for (let bulletId in player.bullets) {
+                gameState.removeBullet(bulletId);
+            }
+        });
         gameState.getRoom(socket.id).state = "running";
+
+        serverSocket.to(socket.id).emit("state change", "running");
     });
 
     socket.on("disconnect", () => {
         console.log("Client disconnected with id: " + socket.id );
+
+        let room = gameState.getRoom(socket.id);
+        if (room) {
+            serverSocket.to(socket.id).emit("error");
+            gameState.removeRoom(socket.id);
+        }
 
         let roomId = gameState.getPlayer(socket.id)?.currentRoom;
         if (roomId) {

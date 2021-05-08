@@ -42,10 +42,13 @@ h1, h2 {
     font-family: Roboto,sans-serif;
 }
 span.waiting {
-    color: #c62020;
+    color: #c7a837;
 }
 span.running {
     color: #179517;
+}
+span.eliminated {
+    color: #c62020;
 }
 #error-message.hidden {
     display: none;
@@ -75,4 +78,29 @@ span.running {
     font-family: Roboto, sans-serif;
     color: var(--primary-color);
     margin-top: 1rem;
+}
+#winner-message.hidden {
+    display: none;
+}
+
+#winner-message {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 20px;
+    border: var(--primary-color) solid 5px;
+    padding: 1.5rem 4rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+#winner-message h3 {
+    color: #FEFFBF;
+    font-family: Roboto, sans-serif;
+    font-size: 1.5rem;
+    margin: 0 0 1rem;
+    text-align: center;
 }

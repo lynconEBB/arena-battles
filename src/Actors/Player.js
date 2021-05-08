@@ -9,10 +9,10 @@ const gameCorners = {
 }
 
 const PLAYER_INITIAL_POSITIONS = {
-    1: {x: 512, y: 40},
-    2: {x: 400, y: 512},
-    3: {x: 300, y: 512},
-    4: {x: 40, y: 512},
+    1: {x: 512, y: 30},
+    2: {x: 30, y: 288},
+    3: {x: 512, y: 555},
+    4: {x: 1000, y: 288},
 }
 
 class Player{
@@ -24,6 +24,7 @@ class Player{
         this.isAlive = true;
         this.rotation = Math.PI/2;
         this.bullets = {};
+        this.lastShotTimestamp = 0;
         this.speed = 5;
         this.cursorPosition = {x: 0, y:0};
         this.movements = new Map();
@@ -40,6 +41,13 @@ class Player{
             s:this.moveUp.bind(this),
             d: this.moveLeft.bind(this)
         };
+    }
+
+    reset() {
+        this.x = PLAYER_INITIAL_POSITIONS[this.sprite].x;
+        this.y = PLAYER_INITIAL_POSITIONS[this.sprite].y;
+        this.isAlive = true;
+        this.rotation = Math.PI/2;
     }
 
     move() {

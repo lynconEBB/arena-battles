@@ -21,4 +21,4 @@ http.listen(port, () => {
     console.log('listening on port ' + port);
 });
 
-require("./src/backend/gameLoop.js");
+require("./src/gameLoop.js");
