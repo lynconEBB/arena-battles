@@ -13,7 +13,8 @@ serverSocket.on('connection', (socket) => {
     });
 
     socket.on("enter room", roomId => {
-        if (gameState.getRoom(roomId)) {
+        const room = gameState.getRoom(roomId);
+        if (room && room.players.size < 4) {
             gameState.addPlayerToRoom(roomId, socket.id);
             socket.join(roomId);
             const player = gameState.getPlayer(socket.id);

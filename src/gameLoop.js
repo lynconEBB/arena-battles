@@ -27,7 +27,6 @@ const checkBulletPlayerCollision = (room, bullet, roomId) => {
 }
 
 const tick = () => {
-    console.log(gameState.rooms.size);
     gameState.forEachRoom((room, roomId) => {
         if (room.state === "running") {
 

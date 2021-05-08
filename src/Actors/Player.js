@@ -48,6 +48,7 @@ class Player{
         this.y = PLAYER_INITIAL_POSITIONS[this.sprite].y;
         this.isAlive = true;
         this.rotation = Math.PI/2;
+        this.movements = new Map();
     }
 
     move() {
